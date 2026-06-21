@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application To-Do complète avec stockage local, catégories, priorités et thème sombre/clair">
+    <title>Ma To-Do List - Gestionnaire de Tâches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-tasks"></i> Ma To-Do List</h1>
+                <button class="theme-toggle" id="themeToggle" title="Changer le thème">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="taskInput" 
+                        class="task-input" 
+                        placeholder="Ajouter une nouvelle tâche..."
+                        autocomplete="off"
+                    >
+                    <button class="btn-add" id="addBtn" title="Ajouter">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Task Details -->
+                <div class="task-details">
+                    <div class="detail-group">
+                        <label for="categorySelect">Catégorie</label>
+                        <select id="categorySelect" class="select-input">
+                            <option value="travail">💼 Travail</option>
+                            <option value="personnel">👤 Personnel</option>
+                            <option value="courses">🛒 Courses</option>
+                            <option value="sante">❤️ Santé</option>
+                            <option value="autre">📌 Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="detail-group">
+                        <label for="prioritySelect">Priorité</label>
+                        <select id="prioritySelect" class="select-input">
+                            <option value="basse">🟢 Basse</option>
+                            <option value="moyenne" selected>🟡 Moyenne</option>
+                            <option value="haute">🔴 Haute</option>
+                        </select>
+                    </div>
+
+                    <div class="detail-group">
+                        <label for="dueDateInput">Date d'échéance</label>
+                        <input type="date" id="dueDateInput" class="input-date">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Rechercher une tâche..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="tous">
+                        <i class="fas fa-list"></i> Toutes
+                    </button>
+                    <button class="filter-btn" data-filter="incomplete">
+                        <i class="fas fa-circle"></i> À faire
+                    </button>
+                    <button class="filter-btn" data-filter="complete">
+                        <i class="fas fa-check-circle"></i> Complétées
+                    </button>
+                </div>
+            </section>
+
+            <!-- Category Tabs -->
+            <section class="category-tabs">
+                <button class="category-tab active" data-category="tous">
+                    📋 Toutes (0)
+                </button>
+                <button class="category-tab" data-category="travail">
+                    💼 Travail (0)
+                </button>
+                <button class="category-tab" data-category="personnel">
+                    👤 Personnel (0)
+                </button>
+                <button class="category-tab" data-category="courses">
+                    🛒 Courses (0)
+                </button>
+                <button class="category-tab" data-category="sante">
+                    ❤️ Santé (0)
+                </button>
+                <button class="category-tab" data-category="autre">
+                    📌 Autre (0)
+                </button>
+            </section>
+
+            <!-- Tasks List -->
+            <section class="tasks-section">
+                <div id="tasksList" class="tasks-list">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Aucune tâche pour le moment</p>
+                        <small>Ajoutez une tâche pour commencer</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Total</span>
+                        <span class="stat-value" id="totalTasks">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Complétées</span>
+                        <span class="stat-value" id="completedTasks">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <span class="stat-label">À faire</span>
+                        <span class="stat-value" id="pendingTasks">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-content">
+                        <span class="stat-label">Priorité haute</span>
+                        <span class="stat-value" id="highPriorityTasks">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="action-buttons">
+                <button class="btn-secondary" id="clearCompletedBtn">
+                    <i class="fas fa-trash"></i> Effacer les complétées
+                </button>
+                <button class="btn-secondary" id="exportBtn">
+                    <i class="fas fa-download"></i> Exporter
+                </button>
+                <button class="btn-secondary" id="clearAllBtn">
+                    <i class="fas fa-exclamation-triangle"></i> Tout effacer
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Éditer la tâche</h2>
+                <button class="btn-close" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTaskInput">Tâche</label>
+                    <input type="text" id="editTaskInput" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editCategorySelect">Catégorie</label>
+                    <select id="editCategorySelect" class="form-select">
+                        <option value="travail">💼 Travail</option>
+                        <option value="personnel">👤 Personnel</option>
+                        <option value="courses">🛒 Courses</option>
+                        <option value="sante">❤️ Santé</option>
+                        <option value="autre">📌 Autre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editPrioritySelect">Priorité</label>
+                    <select id="editPrioritySelect" class="form-select">
+                        <option value="basse">🟢 Basse</option>
+                        <option value="moyenne">🟡 Moyenne</option>
+                        <option value="haute">🔴 Haute</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDueDateInput">Date d'échéance</label>
+                    <input type="date" id="editDueDateInput" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelEditBtn">Annuler</button>
+                <button class="btn-save" id="saveEditBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
